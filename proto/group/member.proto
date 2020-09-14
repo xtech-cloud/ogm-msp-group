@@ -21,7 +21,7 @@ service Member
 message MemberAddRequest
 {
     string collection = 1; // 集合UUID
-    string uuid = 2;       // 成员UUID
+    string element = 2;    // 元素UUID
 }
 
 // 列举成员的请求
@@ -42,13 +42,13 @@ message MemberListResponse
 // 移除成员的请求
 message MemberRemoveRequest
 {
-    string uuid = 1; // uuid
+    string element = 1; // 元素UUID
 }
 
 // 获取成员的请求
 message MemberGetRequest
 {
-    string uuid = 1; // uuid
+    string element = 1; // 元素uuid
 }
 
 // 获取成员信息的回复

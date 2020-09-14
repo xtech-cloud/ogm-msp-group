@@ -31,5 +31,7 @@ message CollectionEntity
 // 成员实体
 message MemberEntity
 {
-    string uuid = 1;     // uuid
+    string uuid = 1;       // uuid
+    string collection = 2; // 集合uuid
+    string element = 3;    // 元素uuid
 }
