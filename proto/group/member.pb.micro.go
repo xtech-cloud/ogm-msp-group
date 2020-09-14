@@ -42,6 +42,8 @@ type MemberService interface {
 	Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*BlankResponse, error)
 	// 获取一个成员信息
 	Get(ctx context.Context, in *MemberGetRequest, opts ...client.CallOption) (*MemberGetResponse, error)
+	// 获取所在的集合
+	Where(ctx context.Context, in *MemberWhereRequest, opts ...client.CallOption) (*MemberWhereResponse, error)
 }
 
 type memberService struct {
@@ -96,6 +98,16 @@ func (c *memberService) Get(ctx context.Context, in *MemberGetRequest, opts ...c
 	return out, nil
 }
 
+func (c *memberService) Where(ctx context.Context, in *MemberWhereRequest, opts ...client.CallOption) (*MemberWhereResponse, error) {
+	req := c.c.NewRequest(c.name, "Member.Where", in)
+	out := new(MemberWhereResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Member service
 
 type MemberHandler interface {
@@ -107,6 +119,8 @@ type MemberHandler interface {
 	Remove(context.Context, *MemberRemoveRequest, *BlankResponse) error
 	// 获取一个成员信息
 	Get(context.Context, *MemberGetRequest, *MemberGetResponse) error
+	// 获取所在的集合
+	Where(context.Context, *MemberWhereRequest, *MemberWhereResponse) error
 }
 
 func RegisterMemberHandler(s server.Server, hdlr MemberHandler, opts ...server.HandlerOption) error {
@@ -115,6 +129,7 @@ func RegisterMemberHandler(s server.Server, hdlr MemberHandler, opts ...server.H
 		List(ctx context.Context, in *MemberListRequest, out *MemberListResponse) error
 		Remove(ctx context.Context, in *MemberRemoveRequest, out *BlankResponse) error
 		Get(ctx context.Context, in *MemberGetRequest, out *MemberGetResponse) error
+		Where(ctx context.Context, in *MemberWhereRequest, out *MemberWhereResponse) error
 	}
 	type Member struct {
 		member
@@ -141,4 +156,8 @@ func (h *memberHandler) Remove(ctx context.Context, in *MemberRemoveRequest, out
 
 func (h *memberHandler) Get(ctx context.Context, in *MemberGetRequest, out *MemberGetResponse) error {
 	return h.MemberHandler.Get(ctx, in, out)
+}
+
+func (h *memberHandler) Where(ctx context.Context, in *MemberWhereRequest, out *MemberWhereResponse) error {
+	return h.MemberHandler.Where(ctx, in, out)
 }

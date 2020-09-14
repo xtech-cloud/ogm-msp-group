@@ -15,6 +15,8 @@ service Member
     rpc Remove(MemberRemoveRequest) returns (BlankResponse) {}
     // 获取一个成员信息
     rpc Get(MemberGetRequest) returns (MemberGetResponse) {}
+    // 获取所在的集合
+    rpc Where(MemberWhereRequest) returns (MemberWhereResponse) {}
 }
 
 // 加入成员的请求
@@ -57,4 +59,17 @@ message MemberGetResponse
 {
     Status status = 1;       // 状态
     MemberEntity entity = 2; // 实体
+}
+
+// 获取成员所在的集合的请求
+message MemberWhereRequest
+{
+    string element = 1; // 元素UUID
+}
+
+// 获取成员所在的集合的回复
+message MemberWhereResponse
+{
+    Status status = 1;              // 状态
+    repeated string collection = 2; // 集合列表
 }
