@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package group;
+
+// 状态
+message Status
+{
+    int32 code = 1;     // 状态码
+    string message = 2; // 状态信息
+}
+
+// 空白请求
+message BlankRequest
+{
+}
+
+// 空白回复
+message BlankResponse
+{
+    Status status = 1; // 状态
+}
+
+// 集合实体
+message CollectionEntity
+{
+    string uuid = 1;     // uuid
+    string name = 2;     // 名称
+    uint64 capacity = 3; // 成员上限, 0为无限制
+}
+
+// 成员实体
+message MemberEntity
+{
+    string uuid = 1;     // uuid
+}

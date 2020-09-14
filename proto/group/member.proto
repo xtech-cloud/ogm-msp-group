@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+import "proto/group/shared.proto";
+
+package group;
+
+// 成员
+service Member
+{
+    // 加入一个成员
+    rpc Add(MemberAddRequest) returns (BlankResponse) {}
+    // 列举一个集合中的成员
+    rpc List(MemberListRequest) returns (MemberListResponse) {}
+    // 移除一个成员
+    rpc Remove(MemberRemoveRequest) returns (BlankResponse) {}
+    // 获取一个成员信息
+    rpc Get(MemberGetRequest) returns (MemberGetResponse) {}
+}
+
+// 加入成员的请求
+message MemberAddRequest
+{
+    string collection = 1; // 集合UUID
+    string uuid = 2;       // 成员UUID
+}
+
+// 列举成员的请求
+message MemberListRequest
+{
+    int64 offset = 1; // 偏移值
+    int64 count = 2;  // 数量
+}
+
+// 列举成员的回复
+message MemberListResponse
+{
+    Status status = 1;                // 状态
+    uint64 total = 2;                 // 总数
+    repeated MemberEntity entity = 3; // 实体列表
+}
+
+// 移除成员的请求
+message MemberRemoveRequest
+{
+    string uuid = 1; // uuid
+}
+
+// 获取成员的请求
+message MemberGetRequest
+{
+    string uuid = 1; // uuid
+}
+
+// 获取成员信息的回复
+message MemberGetResponse
+{
+    Status status = 1;       // 状态
+    MemberEntity entity = 2; // 实体
+}
