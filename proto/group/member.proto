@@ -27,8 +27,9 @@ message MemberAddRequest
 // 列举成员的请求
 message MemberListRequest
 {
-    int64 offset = 1; // 偏移值
-    int64 count = 2;  // 数量
+    int64 offset = 1;      // 偏移值
+    int64 count = 2;       // 数量
+    string collection = 3; // 集合UUID, 空值时列举所有集合
 }
 
 // 列举成员的回复
