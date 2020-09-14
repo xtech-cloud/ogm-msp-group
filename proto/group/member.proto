@@ -43,13 +43,13 @@ message MemberListResponse
 // 移除成员的请求
 message MemberRemoveRequest
 {
-    string element = 1; // 元素UUID
+    string uuid = 1; // 成员UUID
 }
 
 // 获取成员的请求
 message MemberGetRequest
 {
-    string element = 1; // 元素uuid
+    string uuid = 1; // 成员uuid
 }
 
 // 获取成员信息的回复
