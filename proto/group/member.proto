@@ -23,7 +23,7 @@ service Member
 message MemberAddRequest
 {
     string collection = 1; // 集合UUID
-    string element = 2;    // 元素UUID
+    string element = 2;    // 元素
 }
 
 // 列举成员的请求
@@ -64,7 +64,7 @@ message MemberGetResponse
 // 获取成员所在的集合的请求
 message MemberWhereRequest
 {
-    string element = 1; // 元素UUID
+    string element = 1; // 元素
 }
 
 // 获取成员所在的集合的回复
