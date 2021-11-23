@@ -3,6 +3,7 @@ syntax = "proto3";
 import "proto/group/shared.proto";
 
 package group;
+option go_package = "proto/group;group";
 
 // 成员
 service Member

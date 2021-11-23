@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package group;
+option go_package = "proto/group;group";
 
 // 健康
 service Healthy {
