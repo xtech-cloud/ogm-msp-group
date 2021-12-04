@@ -9,15 +9,17 @@ option go_package = "proto/group;group";
 service Member
 {
     // 加入一个成员
-    rpc Add(MemberAddRequest) returns (BlankResponse) {}
+    rpc Add(MemberAddRequest) returns (BlankResponse) { }
     // 列举一个集合中的成员
-    rpc List(MemberListRequest) returns (MemberListResponse) {}
+    rpc List(MemberListRequest) returns (MemberListResponse) { }
+    // 搜索一个集合中的成员
+    rpc Search(MemberSearchRequest) returns (MemberListResponse) { }
     // 移除一个成员
-    rpc Remove(MemberRemoveRequest) returns (BlankResponse) {}
+    rpc Remove(MemberRemoveRequest) returns (BlankResponse) { }
     // 获取一个成员信息
-    rpc Get(MemberGetRequest) returns (MemberGetResponse) {}
+    rpc Get(MemberGetRequest) returns (MemberGetResponse) { }
     // 获取所在的集合
-    rpc Where(MemberWhereRequest) returns (MemberWhereResponse) {}
+    rpc Where(MemberWhereRequest) returns (MemberWhereResponse) { }
 }
 
 // 加入成员的请求
@@ -33,6 +35,16 @@ message MemberListRequest
     int64 offset = 1;      // 偏移值
     int64 count = 2;       // 数量
     string collection = 3; // 集合UUID, 空值时列举所有集合
+}
+
+// 搜索成员的请求
+message MemberSearchRequest
+{
+    int64 offset = 1;      // 偏移值
+    int64 count = 2;       // 数量
+    string collection = 3; // 集合UUID, 空值时列举所有集合
+    string element = 4;    // 元素
+    string alias = 5;      // 别名
 }
 
 // 列举成员的回复

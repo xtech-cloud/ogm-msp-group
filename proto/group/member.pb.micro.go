@@ -40,6 +40,8 @@ type MemberService interface {
 	Add(ctx context.Context, in *MemberAddRequest, opts ...client.CallOption) (*BlankResponse, error)
 	// 列举一个集合中的成员
 	List(ctx context.Context, in *MemberListRequest, opts ...client.CallOption) (*MemberListResponse, error)
+	// 搜索一个集合中的成员
+	Search(ctx context.Context, in *MemberSearchRequest, opts ...client.CallOption) (*MemberListResponse, error)
 	// 移除一个成员
 	Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*BlankResponse, error)
 	// 获取一个成员信息
@@ -72,6 +74,16 @@ func (c *memberService) Add(ctx context.Context, in *MemberAddRequest, opts ...c
 
 func (c *memberService) List(ctx context.Context, in *MemberListRequest, opts ...client.CallOption) (*MemberListResponse, error) {
 	req := c.c.NewRequest(c.name, "Member.List", in)
+	out := new(MemberListResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *memberService) Search(ctx context.Context, in *MemberSearchRequest, opts ...client.CallOption) (*MemberListResponse, error) {
+	req := c.c.NewRequest(c.name, "Member.Search", in)
 	out := new(MemberListResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -117,6 +129,8 @@ type MemberHandler interface {
 	Add(context.Context, *MemberAddRequest, *BlankResponse) error
 	// 列举一个集合中的成员
 	List(context.Context, *MemberListRequest, *MemberListResponse) error
+	// 搜索一个集合中的成员
+	Search(context.Context, *MemberSearchRequest, *MemberListResponse) error
 	// 移除一个成员
 	Remove(context.Context, *MemberRemoveRequest, *BlankResponse) error
 	// 获取一个成员信息
@@ -129,6 +143,7 @@ func RegisterMemberHandler(s server.Server, hdlr MemberHandler, opts ...server.H
 	type member interface {
 		Add(ctx context.Context, in *MemberAddRequest, out *BlankResponse) error
 		List(ctx context.Context, in *MemberListRequest, out *MemberListResponse) error
+		Search(ctx context.Context, in *MemberSearchRequest, out *MemberListResponse) error
 		Remove(ctx context.Context, in *MemberRemoveRequest, out *BlankResponse) error
 		Get(ctx context.Context, in *MemberGetRequest, out *MemberGetResponse) error
 		Where(ctx context.Context, in *MemberWhereRequest, out *MemberWhereResponse) error
@@ -150,6 +165,10 @@ func (h *memberHandler) Add(ctx context.Context, in *MemberAddRequest, out *Blan
 
 func (h *memberHandler) List(ctx context.Context, in *MemberListRequest, out *MemberListResponse) error {
 	return h.MemberHandler.List(ctx, in, out)
+}
+
+func (h *memberHandler) Search(ctx context.Context, in *MemberSearchRequest, out *MemberListResponse) error {
+	return h.MemberHandler.Search(ctx, in, out)
 }
 
 func (h *memberHandler) Remove(ctx context.Context, in *MemberRemoveRequest, out *BlankResponse) error {

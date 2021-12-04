@@ -40,9 +40,11 @@ type CollectionService interface {
 	Make(ctx context.Context, in *CollectionMakeRequest, opts ...client.CallOption) (*BlankResponse, error)
 	// 列举集合
 	List(ctx context.Context, in *CollectionListRequest, opts ...client.CallOption) (*CollectionListResponse, error)
-	// 删除一个集合
+	// 搜索集合
+	Search(ctx context.Context, in *CollectionSearchRequest, opts ...client.CallOption) (*CollectionListResponse, error)
+	// 删除集合
 	Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*BlankResponse, error)
-	// 获取一个集合信息
+	// 获取集合信息
 	Get(ctx context.Context, in *CollectionGetRequest, opts ...client.CallOption) (*CollectionGetResponse, error)
 }
 
@@ -78,6 +80,16 @@ func (c *collectionService) List(ctx context.Context, in *CollectionListRequest,
 	return out, nil
 }
 
+func (c *collectionService) Search(ctx context.Context, in *CollectionSearchRequest, opts ...client.CallOption) (*CollectionListResponse, error) {
+	req := c.c.NewRequest(c.name, "Collection.Search", in)
+	out := new(CollectionListResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *collectionService) Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*BlankResponse, error) {
 	req := c.c.NewRequest(c.name, "Collection.Remove", in)
 	out := new(BlankResponse)
@@ -105,9 +117,11 @@ type CollectionHandler interface {
 	Make(context.Context, *CollectionMakeRequest, *BlankResponse) error
 	// 列举集合
 	List(context.Context, *CollectionListRequest, *CollectionListResponse) error
-	// 删除一个集合
+	// 搜索集合
+	Search(context.Context, *CollectionSearchRequest, *CollectionListResponse) error
+	// 删除集合
 	Remove(context.Context, *CollectionRemoveRequest, *BlankResponse) error
-	// 获取一个集合信息
+	// 获取集合信息
 	Get(context.Context, *CollectionGetRequest, *CollectionGetResponse) error
 }
 
@@ -115,6 +129,7 @@ func RegisterCollectionHandler(s server.Server, hdlr CollectionHandler, opts ...
 	type collection interface {
 		Make(ctx context.Context, in *CollectionMakeRequest, out *BlankResponse) error
 		List(ctx context.Context, in *CollectionListRequest, out *CollectionListResponse) error
+		Search(ctx context.Context, in *CollectionSearchRequest, out *CollectionListResponse) error
 		Remove(ctx context.Context, in *CollectionRemoveRequest, out *BlankResponse) error
 		Get(ctx context.Context, in *CollectionGetRequest, out *CollectionGetResponse) error
 	}
@@ -135,6 +150,10 @@ func (h *collectionHandler) Make(ctx context.Context, in *CollectionMakeRequest,
 
 func (h *collectionHandler) List(ctx context.Context, in *CollectionListRequest, out *CollectionListResponse) error {
 	return h.CollectionHandler.List(ctx, in, out)
+}
+
+func (h *collectionHandler) Search(ctx context.Context, in *CollectionSearchRequest, out *CollectionListResponse) error {
+	return h.CollectionHandler.Search(ctx, in, out)
 }
 
 func (h *collectionHandler) Remove(ctx context.Context, in *CollectionRemoveRequest, out *BlankResponse) error {

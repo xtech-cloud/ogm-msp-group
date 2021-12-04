@@ -34,5 +34,6 @@ message MemberEntity
 {
     string uuid = 1;       // uuid
     string collection = 2; // 集合uuid
-    string element = 3;    // 元素uuid
+    string element = 3;    // 元素
+    string alias = 4;      // 别名
 }
