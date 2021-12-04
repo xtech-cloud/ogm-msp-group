@@ -37,13 +37,15 @@ func NewCollectionEndpoints() []*api.Endpoint {
 
 type CollectionService interface {
 	// 创建一个集合
-	Make(ctx context.Context, in *CollectionMakeRequest, opts ...client.CallOption) (*BlankResponse, error)
+	Make(ctx context.Context, in *CollectionMakeRequest, opts ...client.CallOption) (*UuidResponse, error)
+	// 更新一个集合
+	Update(ctx context.Context, in *CollectionUpdateRequest, opts ...client.CallOption) (*UuidResponse, error)
 	// 列举集合
 	List(ctx context.Context, in *CollectionListRequest, opts ...client.CallOption) (*CollectionListResponse, error)
 	// 搜索集合
 	Search(ctx context.Context, in *CollectionSearchRequest, opts ...client.CallOption) (*CollectionListResponse, error)
 	// 删除集合
-	Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*BlankResponse, error)
+	Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*UuidResponse, error)
 	// 获取集合信息
 	Get(ctx context.Context, in *CollectionGetRequest, opts ...client.CallOption) (*CollectionGetResponse, error)
 }
@@ -60,9 +62,19 @@ func NewCollectionService(name string, c client.Client) CollectionService {
 	}
 }
 
-func (c *collectionService) Make(ctx context.Context, in *CollectionMakeRequest, opts ...client.CallOption) (*BlankResponse, error) {
+func (c *collectionService) Make(ctx context.Context, in *CollectionMakeRequest, opts ...client.CallOption) (*UuidResponse, error) {
 	req := c.c.NewRequest(c.name, "Collection.Make", in)
-	out := new(BlankResponse)
+	out := new(UuidResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *collectionService) Update(ctx context.Context, in *CollectionUpdateRequest, opts ...client.CallOption) (*UuidResponse, error) {
+	req := c.c.NewRequest(c.name, "Collection.Update", in)
+	out := new(UuidResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,9 +102,9 @@ func (c *collectionService) Search(ctx context.Context, in *CollectionSearchRequ
 	return out, nil
 }
 
-func (c *collectionService) Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*BlankResponse, error) {
+func (c *collectionService) Remove(ctx context.Context, in *CollectionRemoveRequest, opts ...client.CallOption) (*UuidResponse, error) {
 	req := c.c.NewRequest(c.name, "Collection.Remove", in)
-	out := new(BlankResponse)
+	out := new(UuidResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -114,23 +126,26 @@ func (c *collectionService) Get(ctx context.Context, in *CollectionGetRequest, o
 
 type CollectionHandler interface {
 	// 创建一个集合
-	Make(context.Context, *CollectionMakeRequest, *BlankResponse) error
+	Make(context.Context, *CollectionMakeRequest, *UuidResponse) error
+	// 更新一个集合
+	Update(context.Context, *CollectionUpdateRequest, *UuidResponse) error
 	// 列举集合
 	List(context.Context, *CollectionListRequest, *CollectionListResponse) error
 	// 搜索集合
 	Search(context.Context, *CollectionSearchRequest, *CollectionListResponse) error
 	// 删除集合
-	Remove(context.Context, *CollectionRemoveRequest, *BlankResponse) error
+	Remove(context.Context, *CollectionRemoveRequest, *UuidResponse) error
 	// 获取集合信息
 	Get(context.Context, *CollectionGetRequest, *CollectionGetResponse) error
 }
 
 func RegisterCollectionHandler(s server.Server, hdlr CollectionHandler, opts ...server.HandlerOption) error {
 	type collection interface {
-		Make(ctx context.Context, in *CollectionMakeRequest, out *BlankResponse) error
+		Make(ctx context.Context, in *CollectionMakeRequest, out *UuidResponse) error
+		Update(ctx context.Context, in *CollectionUpdateRequest, out *UuidResponse) error
 		List(ctx context.Context, in *CollectionListRequest, out *CollectionListResponse) error
 		Search(ctx context.Context, in *CollectionSearchRequest, out *CollectionListResponse) error
-		Remove(ctx context.Context, in *CollectionRemoveRequest, out *BlankResponse) error
+		Remove(ctx context.Context, in *CollectionRemoveRequest, out *UuidResponse) error
 		Get(ctx context.Context, in *CollectionGetRequest, out *CollectionGetResponse) error
 	}
 	type Collection struct {
@@ -144,8 +159,12 @@ type collectionHandler struct {
 	CollectionHandler
 }
 
-func (h *collectionHandler) Make(ctx context.Context, in *CollectionMakeRequest, out *BlankResponse) error {
+func (h *collectionHandler) Make(ctx context.Context, in *CollectionMakeRequest, out *UuidResponse) error {
 	return h.CollectionHandler.Make(ctx, in, out)
+}
+
+func (h *collectionHandler) Update(ctx context.Context, in *CollectionUpdateRequest, out *UuidResponse) error {
+	return h.CollectionHandler.Update(ctx, in, out)
 }
 
 func (h *collectionHandler) List(ctx context.Context, in *CollectionListRequest, out *CollectionListResponse) error {
@@ -156,7 +175,7 @@ func (h *collectionHandler) Search(ctx context.Context, in *CollectionSearchRequ
 	return h.CollectionHandler.Search(ctx, in, out)
 }
 
-func (h *collectionHandler) Remove(ctx context.Context, in *CollectionRemoveRequest, out *BlankResponse) error {
+func (h *collectionHandler) Remove(ctx context.Context, in *CollectionRemoveRequest, out *UuidResponse) error {
 	return h.CollectionHandler.Remove(ctx, in, out)
 }
 

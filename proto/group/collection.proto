@@ -9,13 +9,15 @@ option go_package = "proto/group;group";
 service Collection
 {
     // 创建一个集合
-    rpc Make(CollectionMakeRequest) returns (BlankResponse) { }
+    rpc Make(CollectionMakeRequest) returns (UuidResponse) { }
+    // 更新一个集合
+    rpc Update(CollectionUpdateRequest) returns (UuidResponse) { }
     // 列举集合
     rpc List(CollectionListRequest) returns (CollectionListResponse) { }
     // 搜索集合
     rpc Search(CollectionSearchRequest) returns (CollectionListResponse) { }
     // 删除集合
-    rpc Remove(CollectionRemoveRequest) returns (BlankResponse) { }
+    rpc Remove(CollectionRemoveRequest) returns (UuidResponse) { }
     // 获取集合信息
     rpc Get(CollectionGetRequest) returns (CollectionGetResponse) { }
 }
@@ -25,6 +27,14 @@ message CollectionMakeRequest
 {
     string name = 1;     // 名称
     uint64 capacity = 2; // 成员上限，0为无限制
+}
+
+// 更新集合的请求
+message CollectionUpdateRequest
+{
+    string uuid = 1;     // uuid
+    string name = 2;     // 名称
+    uint64 capacity = 3; // 成员上限，0为无限制
 }
 
 // 列举集合的请求

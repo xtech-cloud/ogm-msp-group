@@ -9,13 +9,15 @@ option go_package = "proto/group;group";
 service Member
 {
     // 加入一个成员
-    rpc Add(MemberAddRequest) returns (BlankResponse) { }
+    rpc Add(MemberAddRequest) returns (UuidResponse) { }
+    // 更新一个成员
+    rpc Update(MemberUpdateRequest) returns (UuidResponse) { }
     // 列举一个集合中的成员
     rpc List(MemberListRequest) returns (MemberListResponse) { }
     // 搜索一个集合中的成员
     rpc Search(MemberSearchRequest) returns (MemberListResponse) { }
     // 移除一个成员
-    rpc Remove(MemberRemoveRequest) returns (BlankResponse) { }
+    rpc Remove(MemberRemoveRequest) returns (UuidResponse) { }
     // 获取一个成员信息
     rpc Get(MemberGetRequest) returns (MemberGetResponse) { }
     // 获取所在的集合
@@ -27,6 +29,15 @@ message MemberAddRequest
 {
     string collection = 1; // 集合UUID
     string element = 2;    // 元素
+    string alias = 3;      // 别名
+}
+
+// 更新成员的请求
+message MemberUpdateRequest
+{
+    string uuid = 1;    // 成员UUID
+    string element = 2; // 元素
+    string alias = 3;   // 别名
 }
 
 // 列举成员的请求

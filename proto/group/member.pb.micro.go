@@ -37,13 +37,15 @@ func NewMemberEndpoints() []*api.Endpoint {
 
 type MemberService interface {
 	// 加入一个成员
-	Add(ctx context.Context, in *MemberAddRequest, opts ...client.CallOption) (*BlankResponse, error)
+	Add(ctx context.Context, in *MemberAddRequest, opts ...client.CallOption) (*UuidResponse, error)
+	// 更新一个成员
+	Update(ctx context.Context, in *MemberUpdateRequest, opts ...client.CallOption) (*UuidResponse, error)
 	// 列举一个集合中的成员
 	List(ctx context.Context, in *MemberListRequest, opts ...client.CallOption) (*MemberListResponse, error)
 	// 搜索一个集合中的成员
 	Search(ctx context.Context, in *MemberSearchRequest, opts ...client.CallOption) (*MemberListResponse, error)
 	// 移除一个成员
-	Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*BlankResponse, error)
+	Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*UuidResponse, error)
 	// 获取一个成员信息
 	Get(ctx context.Context, in *MemberGetRequest, opts ...client.CallOption) (*MemberGetResponse, error)
 	// 获取所在的集合
@@ -62,9 +64,19 @@ func NewMemberService(name string, c client.Client) MemberService {
 	}
 }
 
-func (c *memberService) Add(ctx context.Context, in *MemberAddRequest, opts ...client.CallOption) (*BlankResponse, error) {
+func (c *memberService) Add(ctx context.Context, in *MemberAddRequest, opts ...client.CallOption) (*UuidResponse, error) {
 	req := c.c.NewRequest(c.name, "Member.Add", in)
-	out := new(BlankResponse)
+	out := new(UuidResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *memberService) Update(ctx context.Context, in *MemberUpdateRequest, opts ...client.CallOption) (*UuidResponse, error) {
+	req := c.c.NewRequest(c.name, "Member.Update", in)
+	out := new(UuidResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -92,9 +104,9 @@ func (c *memberService) Search(ctx context.Context, in *MemberSearchRequest, opt
 	return out, nil
 }
 
-func (c *memberService) Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*BlankResponse, error) {
+func (c *memberService) Remove(ctx context.Context, in *MemberRemoveRequest, opts ...client.CallOption) (*UuidResponse, error) {
 	req := c.c.NewRequest(c.name, "Member.Remove", in)
-	out := new(BlankResponse)
+	out := new(UuidResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -126,13 +138,15 @@ func (c *memberService) Where(ctx context.Context, in *MemberWhereRequest, opts 
 
 type MemberHandler interface {
 	// 加入一个成员
-	Add(context.Context, *MemberAddRequest, *BlankResponse) error
+	Add(context.Context, *MemberAddRequest, *UuidResponse) error
+	// 更新一个成员
+	Update(context.Context, *MemberUpdateRequest, *UuidResponse) error
 	// 列举一个集合中的成员
 	List(context.Context, *MemberListRequest, *MemberListResponse) error
 	// 搜索一个集合中的成员
 	Search(context.Context, *MemberSearchRequest, *MemberListResponse) error
 	// 移除一个成员
-	Remove(context.Context, *MemberRemoveRequest, *BlankResponse) error
+	Remove(context.Context, *MemberRemoveRequest, *UuidResponse) error
 	// 获取一个成员信息
 	Get(context.Context, *MemberGetRequest, *MemberGetResponse) error
 	// 获取所在的集合
@@ -141,10 +155,11 @@ type MemberHandler interface {
 
 func RegisterMemberHandler(s server.Server, hdlr MemberHandler, opts ...server.HandlerOption) error {
 	type member interface {
-		Add(ctx context.Context, in *MemberAddRequest, out *BlankResponse) error
+		Add(ctx context.Context, in *MemberAddRequest, out *UuidResponse) error
+		Update(ctx context.Context, in *MemberUpdateRequest, out *UuidResponse) error
 		List(ctx context.Context, in *MemberListRequest, out *MemberListResponse) error
 		Search(ctx context.Context, in *MemberSearchRequest, out *MemberListResponse) error
-		Remove(ctx context.Context, in *MemberRemoveRequest, out *BlankResponse) error
+		Remove(ctx context.Context, in *MemberRemoveRequest, out *UuidResponse) error
 		Get(ctx context.Context, in *MemberGetRequest, out *MemberGetResponse) error
 		Where(ctx context.Context, in *MemberWhereRequest, out *MemberWhereResponse) error
 	}
@@ -159,8 +174,12 @@ type memberHandler struct {
 	MemberHandler
 }
 
-func (h *memberHandler) Add(ctx context.Context, in *MemberAddRequest, out *BlankResponse) error {
+func (h *memberHandler) Add(ctx context.Context, in *MemberAddRequest, out *UuidResponse) error {
 	return h.MemberHandler.Add(ctx, in, out)
+}
+
+func (h *memberHandler) Update(ctx context.Context, in *MemberUpdateRequest, out *UuidResponse) error {
+	return h.MemberHandler.Update(ctx, in, out)
 }
 
 func (h *memberHandler) List(ctx context.Context, in *MemberListRequest, out *MemberListResponse) error {
@@ -171,7 +190,7 @@ func (h *memberHandler) Search(ctx context.Context, in *MemberSearchRequest, out
 	return h.MemberHandler.Search(ctx, in, out)
 }
 
-func (h *memberHandler) Remove(ctx context.Context, in *MemberRemoveRequest, out *BlankResponse) error {
+func (h *memberHandler) Remove(ctx context.Context, in *MemberRemoveRequest, out *UuidResponse) error {
 	return h.MemberHandler.Remove(ctx, in, out)
 }
 
