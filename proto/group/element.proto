@@ -96,6 +96,6 @@ message ElementWhereRequest
 // 获取成员所在的集合的回复
 message ElementWhereResponse
 {
-    Status status = 1;              // 状态
-    repeated string collection = 2; // 集合列表
+    Status status = 1;            // 状态
+    map<string, string> uuid = 2; // 在各集合中的UUID
 }
