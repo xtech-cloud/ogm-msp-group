@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+import "proto/group/shared.proto";
+
+package group;
+option go_package = "proto/group;group";
+
+// 元素
+service Element
+{
+    // 加入一个元素
+    rpc Add(ElementAddRequest) returns (UuidResponse) { }
+    // 更新一个元素
+    rpc Update(ElementUpdateRequest) returns (UuidResponse) { }
+    // 列举一个集合的元素
+    rpc List(ElementListRequest) returns (ElementListResponse) { }
+    // 搜索一个集合中的元素
+    rpc Search(ElementSearchRequest) returns (ElementListResponse) { }
+    // 移除一个元素
+    rpc Remove(ElementRemoveRequest) returns (UuidResponse) { }
+    // 获取一个元素信息
+    rpc Get(ElementGetRequest) returns (ElementGetResponse) { }
+    // 获取所在的集合
+    rpc Where(ElementWhereRequest) returns (ElementWhereResponse) { }
+}
+
+// 加入成员的请求
+message ElementAddRequest
+{
+    string collection = 1;     // 集合UUID
+    string key = 2;            // 键
+    string alias = 3;          // 别名
+    repeated string label = 4; // 标签
+}
+
+// 更新成员的请求
+message ElementUpdateRequest
+{
+    string uuid = 1;           // 成员UUID
+    string key = 2;            // 键
+    string alias = 3;          // 别名
+    repeated string label = 4; // 标签
+}
+
+// 列举成员的请求
+message ElementListRequest
+{
+    int64 offset = 1;      // 偏移值
+    int64 count = 2;       // 数量
+    string collection = 3; // 集合UUID, 空值时列举所有集合
+}
+
+// 搜索成员的请求
+message ElementSearchRequest
+{
+    int64 offset = 1;      // 偏移值
+    int64 count = 2;       // 数量
+    string collection = 3; // 集合UUID, 空值时列举所有集合
+    string key = 4;        // 键
+    string alias = 5;      // 别名
+}
+
+// 列举成员的回复
+message ElementListResponse
+{
+    Status status = 1;                 // 状态
+    uint64 total = 2;                  // 总数
+    repeated ElementEntity entity = 3; // 实体列表
+}
+
+// 移除成员的请求
+message ElementRemoveRequest
+{
+    string uuid = 1; // 成员UUID
+}
+
+// 获取成员的请求
+message ElementGetRequest
+{
+    string uuid = 1; // 成员uuid
+}
+
+// 获取成员信息的回复
+message ElementGetResponse
+{
+    Status status = 1;        // 状态
+    ElementEntity entity = 2; // 实体
+}
+
+// 获取成员所在的集合的请求
+message ElementWhereRequest
+{
+    string key = 1; // 键
+}
+
+// 获取成员所在的集合的回复
+message ElementWhereResponse
+{
+    Status status = 1;              // 状态
+    repeated string collection = 2; // 集合列表
+}

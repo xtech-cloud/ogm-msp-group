@@ -36,11 +36,12 @@ message CollectionEntity
     uint64 capacity = 3; // 成员上限, 0为无限制
 }
 
-// 成员实体
-message MemberEntity
+// 元素实体
+message ElementEntity
 {
-    string uuid = 1;       // uuid
-    string collection = 2; // 集合uuid
-    string element = 3;    // 元素
-    string alias = 4;      // 别名
+    string uuid = 1;           // uuid
+    string collection = 2;     // 集合uuid
+    string key = 3;            // 键
+    string alias = 4;          // 别名
+    repeated string label = 5; // 标签
 }
